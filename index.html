@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AgriVision – Plant Health Analyzer</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: url('https://plus.unsplash.com/premium_photo-1661902195336-996462e0d1d6?q=80&w=1261&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background: rgba(0,0,0,0.5);
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: #e0f2f1;
+    }
+
+    select {
+      padding: 6px;
+      border-radius: 6px;
+      border: none;
+      background: rgba(255,255,255,0.8);
+      color: #333;
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 20px;
+      margin: 40px auto;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.4);
+      max-width: 900px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 20px;
+      color: #e0f2f1;
+      max-width: 700px;
+      margin: 0 auto 30px auto;
+    }
+
+    .hero .btn {
+      padding: 15px 40px;
+      font-size: 18px;
+      background: #2e7d32;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .hero .btn:hover {
+      background: #27632a;
+    }
+
+    .section {
+      padding: 60px 20px;
+      text-align: center;
+      margin: 40px auto;
+      max-width: 1000px;
+      border-radius: 15px;
+      background: rgba(0,0,0,0.35);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    }
+
+    .section h2 {
+      font-size: 32px;
+      color: #e0f2f1;
+      margin-bottom: 30px;
+    }
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.2);
+      padding: 25px 20px;
+      border-radius: 15px;
+      width: 220px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: 0.3s;
+      backdrop-filter: blur(6px);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #e0f2f1;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo" id="title">AgriVision</div>
+
+  <!-- Language Dropdown -->
+  <select onchange="changeLang(this.value)">
+    <option value="en">English</option>
+    <option value="hi">हिंदी</option>
+    <option value="ta">தமிழ்</option>
+    <option value="te">తెలుగు</option>
+    <option value="kn">ಕನ್ನಡ</option>
+  </select>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <h1 id="heading">AI-Based Plant Disease Detection</h1>
+  <p id="desc">Upload a leaf image and instantly detect plant diseases with recommended treatments.</p>
+  <button class="btn" onclick="start()" id="startBtn">Start Analysis</button>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="section">
+  <h2 id="how">How It Works</h2>
+  <div class="cards">
+    <div class="card" id="step1">Upload leaf image</div>
+    <div class="card" id="step2">AI analyzes disease</div>
+    <div class="card" id="step3">Get results & treatment</div>
+  </div>
+</div>
+
+<!-- GUIDELINES -->
+<div class="section">
+  <h2 id="guideTitle">Guidelines for Farmers</h2>
+  <div class="cards">
+    <div class="card" id="g1">Take a clear photo of the leaf</div>
+    <div class="card" id="g2">Avoid blurry or dark images</div>
+    <div class="card" id="g3">Capture only the leaf area</div>
+    <div class="card" id="g4">Ensure proper lighting</div>
+  </div>
+</div>
+
+<footer id="footer">Smart Farming with AI</footer>
+
+<script>
+function start() {
+  window.location.href = "app.html";
+}
+
+// Language data
+const translations = {
+  en: { heading: "AI-Based Plant Disease Detection", desc: "Upload a leaf image and instantly detect plant diseases with recommended treatments.", startBtn: "Start Analysis", how: "How It Works", step1: "Upload leaf image", step2: "AI analyzes disease", step3: "Get results & treatment", guideTitle: "Guidelines for Farmers", g1: "Take a clear photo of the leaf", g2: "Avoid blurry or dark images", g3: "Capture only the leaf area", g4: "Ensure proper lighting", footer: "Smart Farming with AI" },
+  hi: { heading: "एआई आधारित पौध रोग पहचान", desc: "पत्ते की फोटो अपलोड करें और तुरंत रोग पहचानें।", startBtn: "विश्लेषण शुरू करें", how: "कैसे काम करता है", step1: "पत्ते की फोटो अपलोड करें", step2: "एआई रोग पहचानता है", step3: "परिणाम और उपचार प्राप्त करें", guideTitle: "किसानों के लिए दिशा-निर्देश", g1: "स्पष्ट फोटो लें", g2: "धुंधली फोटो से बचें", g3: "केवल पत्ता दिखाएँ", g4: "अच्छी रोशनी रखें", footer: "एआई के साथ स्मार्ट खेती" },
+  ta: { heading: "ஏஐ அடிப்படையிலான தாவர நோய் கண்டறிதல்", desc: "இலை படத்தை பதிவேற்றி நோயை கண்டறியுங்கள்.", startBtn: "தொடங்கு", how: "எப்படி வேலை செய்கிறது", step1: "இலை படத்தை பதிவேற்றவும்", step2: "ஏஐ நோயை கண்டறியும்", step3: "முடிவுகளை பெறுங்கள்", guideTitle: "விவசாயிகளுக்கான வழிகாட்டி", g1: "தெளிவான படம் எடுக்கவும்", g2: "மங்கலான படங்களை தவிர்க்கவும்", g3: "இலை மட்டும் காட்டவும்", g4: "சரியான ஒளி இருக்க வேண்டும்", footer: "ஏஐ மூலம் புத்திசாலி விவசாயம்" },
+  te: { heading: "ఎఐ ఆధారిత మొక్కల వ్యాధి గుర్తింపు", desc: "ఆకు చిత్రాన్ని అప్లోడ్ చేసి వ్యాధిని గుర్తించండి.", startBtn: "ప్రారంభించండి", how: "ఎలా పనిచేస్తుంది", step1: "ఆకు చిత్రం అప్లోడ్ చేయండి", step2: "ఎఐ విశ్లేషిస్తుంది", step3: "ఫలితాలు పొందండి", guideTitle: "రైతుల కోసం సూచనలు", g1: "స్పష్టమైన ఫోటో తీయండి", g2: "బ్లర్ ఫోటో వద్దు", g3: "ఆకు మాత్రమే చూపండి", g4: "తగిన వెలుతురు ఉండాలి", footer: "ఎఐతో స్మార్ట్ వ్యవసాయం" },
+  kn: { heading: "ಎಐ ಆಧಾರಿತ ಸಸ್ಯ ರೋಗ ಪತ್ತೆ", desc: "ಇಲೆಯ ಚಿತ್ರವನ್ನು ಅಪ್ಲೋಡ್ ಮಾಡಿ ರೋಗವನ್ನು ಪತ್ತೆಹಚ್ಚಿ.", startBtn: "ಆರಂಭಿಸಿ", how: "ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ", step1: "ಇಲೆಯ ಚಿತ್ರ ಅಪ್ಲೋಡ್ ಮಾಡಿ", step2: "ಎಐ ವಿಶ್ಲೇಷಿಸುತ್ತದೆ", step3: "ಫಲಿತಾಂಶ ಪಡೆಯಿರಿ", guideTitle: "ರೈತರಿಗೆ ಮಾರ್ಗದರ್ಶನ", g1: "ಸ್ಪಷ್ಟ ಚಿತ್ರ ತೆಗೆದುಕೊಳ್ಳಿ", g2: "ಮಸುಕಾದ ಚಿತ್ರ ಬೇಡ", g3: "ಇಲೆ ಮಾತ್ರ ತೋರಿಸಿ", g4: "ಸರಿಯಾದ ಬೆಳಕು ಇರಲಿ", footer: "ಎಐ ಸಹಿತ ಸ್ಮಾರ್ಟ್ ಕೃಷಿ" }
+};
+
+function changeLang(lang) {
+  const t = translations[lang];
+  localStorage.setItem("lang", lang);
+  for (let key in t) document.getElementById(key).innerText = t[key];
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const lang = localStorage.getItem("lang") || "en";
+  changeLang(lang);
+});
+</script>
+
+</body>
+</html>

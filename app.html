@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Plant Health Analyzer</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: url('https://plus.unsplash.com/premium_photo-1661902195336-996462e0d1d6?q=80&w=1261&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 60px auto;
+      padding: 40px 25px;
+      border-radius: 15px;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    }
+
+    h2 {
+      color: #e0f2f1;
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+      margin: 20px 0;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255,255,255,0.9);
+      color: #333;
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 18px;
+      background: #2e7d32;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #27632a;
+    }
+
+    #preview {
+      margin-top: 20px;
+      max-width: 100%;
+      border-radius: 12px;
+      display: none;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    }
+
+    .result {
+      margin-top: 30px;
+      text-align: left;
+      display: none;
+      background: rgba(0,0,0,0.5);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+
+    .result p {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+
+    .guidelines {
+      margin-top: 50px;
+      padding: 30px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+
+    .guidelines h3 {
+      font-size: 26px;
+      margin-bottom: 20px;
+      color: #e0f2f1;
+    }
+
+    .guidelines ul {
+      list-style: none;
+      padding: 0;
+      font-size: 18px;
+      color: #f0f0f0;
+    }
+
+    .guidelines ul li {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+    }
+
+    .guidelines ul li::before {
+      content: "🌿";
+      margin-right: 10px;
+    }
+
+    #status {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    select {
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2 id="title">Plant Health Analyzer</h2>
+
+    <!-- Language Selector -->
+    <select onchange="changeLang(this.value)">
+      <option value="en">English</option>
+      <option value="hi">हिंदी</option>
+      <option value="ta">தமிழ்</option>
+      <option value="te">తెలుగు</option>
+      <option value="kn">ಕನ್ನಡ</option>
+    </select>
+
+    <input type="file" id="fileInput">
+    <button onclick="analyze()" id="analyzeBtn">Run Analysis</button>
+
+    <img id="preview">
+
+    <p id="status"></p>
+
+    <div class="result" id="resultBox">
+      <p><b id="diseaseLabel">Disease:</b> <span id="disease"></span></p>
+      <p><b id="levelLabel">Infection Level:</b> <span id="severity"></span></p>
+      <p><b id="confidenceLabel">Confidence:</b> <span id="confidence"></span></p>
+      <p><b id="pesticideLabel">Pesticide:</b> <span id="pesticide"></span></p>
+      <p><b id="actionLabel">Action:</b> <span id="action"></span></p>
+    </div>
+
+    <div class="guidelines">
+      <h3 id="guideTitle">Guidelines for Accurate Analysis</h3>
+      <ul id="guideList">
+        <li>Take a clear photo of the leaf.</li>
+        <li>Avoid blurry or dark images.</li>
+        <li>Capture only the leaf area.</li>
+        <li>Ensure proper lighting.</li>
+        <li>Keep the background simple.</li>
+      </ul>
+    </div>
+  </div>
+
+<script>
+const API_URL = "http://127.0.0.1:5000/predict";
+
+// LANGUAGE DATA INCLUDING GUIDELINES
+const translations = {
+  en: {
+    title: "Plant Health Analyzer",
+    analyzeBtn: "Run Analysis",
+    diseaseLabel: "Disease:",
+    levelLabel: "Infection Level:",
+    confidenceLabel: "Confidence:",
+    pesticideLabel: "Pesticide:",
+    actionLabel: "Action:",
+    guideTitle: "Guidelines for Accurate Analysis",
+    guide: [
+      "Take a clear photo of the leaf.",
+      "Avoid blurry or dark images.",
+      "Capture only the leaf area.",
+      "Ensure proper lighting.",
+      "Keep the background simple."
+    ]
+  },
+  hi: {
+    title: "पौध स्वास्थ्य विश्लेषक",
+    analyzeBtn: "विश्लेषण करें",
+    diseaseLabel: "रोग:",
+    levelLabel: "संक्रमण स्तर:",
+    confidenceLabel: "विश्वास स्तर:",
+    pesticideLabel: "कीटनाशक:",
+    actionLabel: "कार्यवाही:",
+    guideTitle: "सटीक विश्लेषण के लिए दिशानिर्देश",
+    guide: [
+      "पत्ते की स्पष्ट फोटो लें।",
+      "धुंधली या अंधेरी तस्वीर से बचें।",
+      "केवल पत्ते को कैप्चर करें।",
+      "उचित प्रकाश सुनिश्चित करें।",
+      "पृष्ठभूमि सरल रखें।"
+    ]
+  },
+  ta: {
+    title: "தாவர ஆரோக்கியம் பகுப்பாய்வு",
+    analyzeBtn: "பகுப்பாய்வு செய்யவும்",
+    diseaseLabel: "நோய்:",
+    levelLabel: "தொற்று நிலை:",
+    confidenceLabel: "நம்பிக்கை:",
+    pesticideLabel: "பூச்சிக்கொல்லி:",
+    actionLabel: "செயல்:",
+    guideTitle: "சரியான பகுப்பாய்விற்கான வழிகாட்டிகள்",
+    guide: [
+      "தெளிவான படத்தை எடுக்கவும்.",
+      "மங்கலான அல்லது கறுப்பான படங்களை தவிர்க்கவும்.",
+      "இலை பகுதியையே பிடிக்கவும்.",
+      "சரியான வெளிச்சத்தை உறுதி செய்யவும்.",
+      "பின்னணி எளிமையாக இருக்கட்டும்."
+    ]
+  },
+  te: {
+    title: "మొక్క ఆరోగ్య విశ్లేషణ",
+    analyzeBtn: "విశ్లేషణ ప్రారంభించండి",
+    diseaseLabel: "వ్యాధి:",
+    levelLabel: "సంఖ్య స్థాయి:",
+    confidenceLabel: "నమ్మకం:",
+    pesticideLabel: "పురుగుమందు:",
+    actionLabel: "చర్య:",
+    guideTitle: "సరిగా విశ్లేషించడానికి మార్గదర్శకాలు",
+    guide: [
+      "స్పష్టమైన ఆకుపత్రి ఫోటో తీయండి.",
+      "మసకటి లేదా చీకటి ఫోటోను నివారించండి.",
+      "కేవలం ఆకుపత్రిని మాత్రమే కవర్లు చేయండి.",
+      "తగిన వెలుతురు కలిగి ఉండాలి.",
+      "ఫ్యాకింగ్ బ్యాక్‌గ్రౌండ్ సింపుల్ గా ఉంచండి."
+    ]
+  },
+  kn: {
+    title: "ಸಸ್ಯ ಆರೋಗ್ಯ ವಿಶ್ಲೇಷಣೆ",
+    analyzeBtn: "ವಿಶ್ಲೇಷಿಸಿ",
+    diseaseLabel: "ರೋಗ:",
+    levelLabel: "ಸಂಕ್ರಮಣ ಮಟ್ಟ:",
+    confidenceLabel: "ವಿಶ್ವಾಸ:",
+    pesticideLabel: "ಕೀಟನಾಶಕ:",
+    actionLabel: "ಕ್ರಮ:",
+    guideTitle: "ಸರಿಯಾದ ವಿಶ್ಲೇಷಣೆಗೆ ಮಾರ್ಗದರ್ಶಿಗಳು",
+    guide: [
+      "ಸ್ಪಷ್ಟ ಚಿತ್ರವನ್ನು ತೆಗೆದುಕೊಳ್ಳಿ.",
+      "ಬಿಳಿ ಅಥವಾ ಕತ್ತಲಾದ ಚಿತ್ರಗಳನ್ನು ತಪ್ಪಿಸಿ.",
+      "ಕೇವಲ ಎಲೆ ಭಾಗವನ್ನು ಸೆರೆಹಿಡಿಯಿರಿ.",
+      "ಸರಿಯಾದ ಬೆಳಕನ್ನು ಖಚಿತಪಡಿಸಿ.",
+      "ಹಿನ್ನೆಲೆ ಸರಳವಾಗಿರಲಿ."
+    ]
+  }
+};
+
+// APPLY LANGUAGE
+function changeLang(lang) {
+  localStorage.setItem("lang", lang);
+  const t = translations[lang];
+
+  for (let key in t) {
+    if (key !== "guide") {
+      const el = document.getElementById(key);
+      if (el) el.innerText = t[key];
+    }
+  }
+
+  // Update guidelines
+  const guideList = document.getElementById("guideList");
+  guideList.innerHTML = "";
+  t.guide.forEach(item => {
+    const li = document.createElement("li");
+    li.innerText = item;
+    guideList.appendChild(li);
+  });
+}
+
+// INITIAL LANGUAGE
+changeLang(localStorage.getItem("lang") || "en");
+
+// ANALYZE FUNCTION
+function analyze() {
+  const file = document.getElementById("fileInput").files[0];
+  if (!file) { alert("Please select an image"); return; }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById("preview").src = e.target.result;
+    document.getElementById("preview").style.display = "block";
+  };
+  reader.readAsDataURL(file);
+
+  document.getElementById("status").innerText = "Analyzing...";
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  fetch(API_URL, { method: "POST", body: formData })
+    .then(res => { if (!res.ok) throw new Error("Server error: " + res.status); return res.json(); })
+    .then(data => {
+      console.log("RESPONSE:", data);
+      document.getElementById("status").innerText = "Analysis Complete";
+      document.getElementById("resultBox").style.display = "block";
+
+      document.getElementById("disease").innerText = data.disease || "Not detected";
+      document.getElementById("severity").innerText = data.severity || "N/A";
+      document.getElementById("confidence").innerText = data.confidence || "N/A";
+      document.getElementById("pesticide").innerText = data.pesticide || "N/A";
+      document.getElementById("action").innerText = data.action || "N/A";
+    })
+    .catch(err => {
+      console.error("ERROR:", err);
+      document.getElementById("status").innerText = "Error: Unable to connect to backend";
+    });
+}
+</script>
+</body>
+</html>
